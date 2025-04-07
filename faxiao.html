@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tạo số cho 生肖</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .result {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .btn {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .btn:hover {
+            background-color: #45a049;
+        }
+        input {
+            padding: 10px;
+            width: 300px;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Nhập các con 生肖</h2>
+    <input type="text" id="shengxiaoInput" placeholder="Nhập các con giáp (ví dụ: 虎龙狗)">
+    <button class="btn" onclick="generateNumbers()">Tạo số cho 生肖</button>
+
+    <div class="result" id="result"></div>
+
+    <script>
+        // Danh sách các con giáp và số tương ứng
+        const shengxiaoData = {
+            "蛇": [49, 37, 01, 25, 13],
+            "龙": [26, 02, 38, 14],
+            "兔": [15, 03, 39, 27],
+            "虎": [16, 28, 04, 40],
+            "牛": [29, 41, 17, 05],
+            "鼠": [06, 30, 42, 18],
+            "猪": [31, 19, 07, 43],
+            "狗": [20, 44, 08, 32],
+            "鸡": [21, 33, 09, 45],
+            "猴": [22, 10, 46, 34],
+            "羊": [35, 11, 47, 23],
+            "马": [48, 24, 36, 12]
+        };
+
+        // Hàm định dạng số thành hai chữ số
+        function formatNumber(number) {
+            return number.toString().padStart(2, '0');
+        }
+
+        function generateNumbers() {
+            const input = document.getElementById("shengxiaoInput").value;
+            const shengxiaoList = Array.from(input).map(item => item.trim()).filter(item => item !== ''); // Loại bỏ dấu phẩy
+
+            let result = '';
+            let selectedNumbers = [];
+            let usedNumbers = new Set();  // Để lưu các số đã chọn
+
+            // Kiểm tra và chọn số cho 7 con giáp đầu tiên
+            shengxiaoList.forEach((shengxiao, index) => {
+                if (shengxiaoData[shengxiao] && index < 7) {
+                    const numbers = shengxiaoData[shengxiao];
+                    let randomIndex;
+                    let number;
+
+                    // Đảm bảo không trùng lặp số đã chọn
+                    do {
+                        randomIndex = Math.floor(Math.random() * numbers.length);
+                        number = numbers[randomIndex];
+                    } while (usedNumbers.has(number)); // Kiểm tra số đã được chọn chưa
+
+                    usedNumbers.add(number);  // Đánh dấu số đã chọn
+                    selectedNumbers.push(formatNumber(number)); // Sử dụng hàm formatNumber để đảm bảo hai chữ số
+                    result += shengxiao + ' - ' + formatNumber(number) + '<br>';
+                }
+            });
+
+            // Chọn thêm 3 con số từ 3 con giáp đầu tiên, không trùng số đã chọn
+            for (let i = 0; i < 3; i++) {
+                if (shengxiaoData[shengxiaoList[i]]) {
+                    const numbers = shengxiaoData[shengxiaoList[i]];
+                    let randomIndex;
+                    let number;
+
+                    // Đảm bảo không trùng lặp số đã chọn
+                    do {
+                        randomIndex = Math.floor(Math.random() * numbers.length);
+                        number = numbers[randomIndex];
+                    } while (usedNumbers.has(number)); // Kiểm tra số đã được chọn chưa
+
+                    usedNumbers.add(number);  // Đánh dấu số đã chọn
+                    selectedNumbers.push(formatNumber(number)); // Sử dụng hàm formatNumber
+                }
+            }
+
+            // Hiển thị kết quả 10 con số với dấu chấm và đảm bảo hai chữ số
+            result += '<br><strong>Tổng cộng 10 con số:</strong> ' + selectedNumbers.join('.') + '.';
+
+            // Hiển thị kết quả
+            document.getElementById('result').innerHTML = result;
+        }
+    </script>
+
+</body>
+</html>

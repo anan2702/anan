@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bum - Menu thư mục</title>
+    <style>
+        .folder {
+            background-color: #f1f1f1;
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+
+        .folder-content {
+            display: none;
+            padding: 10px;
+            background-color: #fafafa;
+            border-left: 1px solid #ddd;
+        }
+
+        .folder.active .folder-content {
+            display: block;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .zodiac-container {
+            margin-bottom: 20px;
+        }
+        .missing-animals {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+        .input-container {
+            margin-bottom: 20px;
+        }
+        input[type="text"] {
+            width: 300px;
+            padding: 10px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="folder">
+        <h3 onclick="toggleContent(this)">Kiểm tra thiếu肖</h3>
+        <div class="folder-content">
+            <h1>lọc thiếu 肖</h1>
+
+            <!-- Ô nhập liệu -->
+            <div class="input-container">
+                <label for="zodiac-input-1">Nhập các con giáp:</label><br>
+                <input type="text" id="zodiac-input-1" placeholder="Ví dụ: 龙兔虎牛鼠猪狗鸡羊蛇马猴">
+            </div>
+
+            <!-- Nút kiểm tra -->
+            <button id="check-button-1" onclick="checkMissingZodiacs()">Kiểm tra thiếu</button>
+
+            <!-- Kết quả hiển thị -->
+            <div class="missing-animals" id="missing-animals-1"></div>
+        </div>
+    </div>
+
+    <div class="folder">
+        <h3 onclick="toggleContent(this)">Kiểm tra thiếu号码</h3>
+        <div class="folder-content">
+            <h1>Kiểm tra số còn thiếu</h1>
+
+            <!-- Ô nhập liệu -->
+            <div class="input-container">
+                <label for="number-input-2">Nhập các số (không dấu phẩy, cách nhau bằng khoảng trắng):</label><br>
+                <input type="text" id="number-input-2" placeholder="Ví dụ: 01 02 03 04 05">
+            </div>
+
+            <!-- Nút kiểm tra -->
+            <button id="check-button-2" onclick="checkMissingNumbers()">Kiểm tra thiếu</button>
+
+            <!-- Kết quả hiển thị -->
+            <div class="missing-numbers" id="missing-numbers-2"></div>
+        </div>
+    </div>
+
+    <div class="folder">
+        <h3 onclick="toggleContent(this)">生肖=号码</h3>
+        <div class="folder-content">
+            <h2>Chọn 生肖 và số</h2>
+
+            <div class="giap-container">
+                <label><input type="checkbox" class="giap" data-numbers="01,13,25,37,49"> 龙</label>
+                <label><input type="checkbox" class="giap" data-numbers="02,14,26,38"> 兔</label>
+                <label><input type="checkbox" class="giap" data-numbers="03,15,27,39"> 虎</label>
+                <label><input type="checkbox" class="giap" data-numbers="04,16,28,40"> 牛</label>
+                <label><input type="checkbox" class="giap" data-numbers="05,17,29,41"> 鼠</label>
+                <label><input type="checkbox" class="giap" data-numbers="06,18,30,42"> 猪</label>
+                <label><input type="checkbox" class="giap" data-numbers="07,19,31,43"> 狗</label>
+                <label><input type="checkbox" class="giap" data-numbers="08,20,32,44"> 鸡</label>
+                <label><input type="checkbox" class="giap" data-numbers="09,21,33,45"> 猴</label>
+                <label><input type="checkbox" class="giap" data-numbers="10,22,34,46"> 羊</label>
+                <label><input type="checkbox" class="giap" data-numbers="11,23,35,47"> 马</label>
+                <label><input type="checkbox" class="giap" data-numbers="12,24,36,48"> 蛇</label>
+            </div>
+
+            <h3>Các số được chọn:</h3>
+            <div id="selected-numbers"></div>
+        </div>
+    </div>
+
+    <div class="folder">
+        <h3 onclick="toggleContent(this)">Thư mục 4</h3>
+        <div class="folder-content">
+            <p>Nội dung của thư mục 4</p>
+        </div>
+    </div>
+
+    <script>
+        // Mở/đóng nội dung thư mục khi nhấp vào tiêu đề
+        function toggleContent(element) {
+            const folder = element.parentElement;
+            folder.classList.toggle("active");
+        }
+
+        // Kiểm tra con giáp bị thiếu (Thư mục 1)
+        function checkMissingZodiacs() {
+            const allZodiacs = ["龙", "兔", "虎", "牛", "鼠", "猪", "狗", "鸡", "羊", "蛇", "马", "猴"];
+            const inputText = document.getElementById('zodiac-input-1').value.trim();
+            if (!inputText) {
+                alert("Vui lòng nhập các con giáp!");
+                return;
+            }
+
+            const inputZodiacs = inputText.split('');
+            const missingAnimals = allZodiacs.filter(animal => !inputZodiacs.includes(animal));
+            document.getElementById('missing-animals-1').innerHTML = missingAnimals.length > 0 
+                ? "Thiếu: " + missingAnimals.join(', ') 
+                : "Không thiếu con giáp nào.";
+        }
+
+        // Kiểm tra số bị thiếu (Thư mục 2)
+        function checkMissingNumbers() {
+            const allNumbers = [];
+            for (let i = 1; i <= 49; i++) {
+                allNumbers.push(i < 10 ? '0' + i : i.toString());
+            }
+            const inputText = document.getElementById('number-input-2').value.trim();
+            if (!inputText) {
+                alert("Vui lòng nhập các số!");
+                return;
+            }
+
+            const inputNumbers = inputText.split(' ').map(item => item.trim());
+            const missingNumbers = allNumbers.filter(number => !inputNumbers.includes(number));
+            document.getElementById('missing-numbers-2').innerHTML = missingNumbers.length > 0 
+                ? "Thiếu: " + missingNumbers.join(', ') 
+                : "Không thiếu số nào.";
+        }
+
+        // Chọn số theo 生肖 và hiển thị số đã chọn (Thư mục 3)
+        document.querySelectorAll('.giap').forEach(checkbox => {
+            checkbox.addEventListener('change', updateSelectedNumbers);
+        });
+
+        function updateSelectedNumbers() {
+            let selectedNumbers = [];
+            document.querySelectorAll('.giap:checked').forEach(checkbox => {
+                const numbers = checkbox.getAttribute('data-numbers').split(',');
+                selectedNumbers = selectedNumbers.concat(numbers);
+            });
+            document.getElementById('selected-numbers').innerHTML = selectedNumbers.join(', ');
+        }
+    </script>
+
+</body>
+</html>
