@@ -1,86 +1,141 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
-  <meta charset="UTF-8">
-  <title>Ghi chú mật khẩu</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      padding: 30px;
-      background-color: #f2f2f2;
-    }
-    h2 {
-      margin-bottom: 15px;
-    }
-    table {
-      border-collapse: collapse;
-      width: 100%;
-      background-color: white;
-    }
-    th, td {
-      border: 1px solid #999;
-      padding: 10px;
-      text-align: left;
-    }
-    th {
-      background-color: #dde6f1;
-    }
-    td {
-      min-height: 20px;
-    }
-    td:empty::before {
-      content: "\00a0"; /* hiển thị khoảng trống khi ô trống */
-    }
-    tbody td {
-      height: 30px;
-    }
-    #status {
-      margin-top: 10px;
-      color: green;
-      font-style: italic;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <title>Ghi chú mật khẩu</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 30px;
+            background-color: #f2f2f2;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            background-color: white;
+        }
+
+        th,
+        td {
+            border: 1px solid #999;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #dde6f1;
+        }
+
+        td {
+            min-height: 20px;
+        }
+
+        td:empty::before {
+            content: "\00a0";
+        }
+
+        #status {
+            margin-top: 10px;
+            color: green;
+            font-style: italic;
+        }
+
+        #loginBox {
+            background: white;
+            padding: 30px;
+            max-width: 300px;
+            margin: 100px auto;
+            border-radius: 10px;
+            box-shadow: 0 0 10px #aaa;
+        }
+
+        input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+        }
+
+        button {
+            margin-top: 10px;
+            padding: 10px;
+            width: 100%;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+    </style>
 </head>
+
 <body>
 
-  <h2>🗂️ Ghi Chú Mật Khẩu</h2>
-  <table id="passwordTable" contenteditable="true">
-    <thead>
-      <tr>
-        <th>Ứng dụng</th>
-        <th>Liên kết</th>
-        <th>Tài khoản</th>
-        <th>Mật khẩu</th>
-      </tr>
-    </thead>
-    <tbody>
-      <!-- Tạo 30 dòng trống -->
-      <script>
-        for (let i = 0; i < 30; i++) {
-          document.write('<tr><td></td><td></td><td></td><td></td></tr>');
+    <!-- Ô nhập mật khẩu -->
+    <div id="loginBox">
+        <h3>🔐 Nhập mật khẩu để truy cập</h3>
+        <input type="password" id="pwInput" placeholder="Mật khẩu...">
+        <button onclick="checkPassword()">Đăng nhập</button>
+        <p id="wrong" style="color:red;"></p>
+    </div>
+
+    <!-- Nội dung bảng bị ẩn ban đầu -->
+    <div id="content" class="hidden">
+        <h2>🗂️ Ghi Chú Mật Khẩu</h2>
+        <table id="passwordTable" contenteditable="true">
+            <thead>
+                <tr>
+                    <th>Ứng dụng</th>
+                    <th>Liên kết</th>
+                    <th>Tài khoản</th>
+                    <th>Mật khẩu</th>
+                </tr>
+            </thead>
+            <tbody>
+                <script>
+                    for (let i = 0; i < 30; i++) {
+                        document.write('<tr><td></td><td></td><td></td><td></td></tr>');
+                    }
+                </script>
+            </tbody>
+        </table>
+        <div id="status">Tự động lưu khi bạn gõ...</div>
+    </div>
+
+    <script>
+        // 🔐 Đổi mật khẩu ở dòng này
+        const correctPassword = "123456";
+
+        function checkPassword() {
+            const input = document.getElementById("pwInput").value;
+            const wrong = document.getElementById("wrong");
+            if (input === correctPassword) {
+                document.getElementById("loginBox").style.display = "none";
+                document.getElementById("content").classList.remove("hidden");
+                loadTable();
+            } else {
+                wrong.textContent = "Sai mật khẩu!";
+            }
         }
-      </script>
-    </tbody>
-  </table>
 
-  <div id="status">Tự động lưu khi bạn gõ...</div>
+        const table = document.getElementById("passwordTable");
+        const status = document.getElementById("status");
 
-  <script>
-    const table = document.getElementById("passwordTable");
-    const status = document.getElementById("status");
+        function loadTable() {
+            const saved = localStorage.getItem("pwData");
+            if (saved) table.innerHTML = saved;
+        }
 
-    // Tải dữ liệu đã lưu
-    window.onload = () => {
-      const saved = localStorage.getItem("pwData");
-      if (saved) table.innerHTML = saved;
-    };
-
-    // Tự động lưu mỗi khi thay đổi nội dung
-    table.addEventListener("input", () => {
-      localStorage.setItem("pwData", table.innerHTML);
-      status.innerText = "💾 Đã lưu lúc: " + new Date().toLocaleTimeString();
-    });
-  </script>
+        table.addEventListener("input", () => {
+            localStorage.setItem("pwData", table.innerHTML);
+            status.innerText = "💾 Đã lưu lúc: " + new Date().toLocaleTimeString();
+        });
+    </script>
 
 </body>
+
 </html>
